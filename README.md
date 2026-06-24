@@ -1,5 +1,7 @@
 # ION — Space Skirmish & Strategy
 
+### ▶ Play it now: **https://rwmorgan.github.io/Ion/**
+
 A browser game built from the *Ion* game design document by Rob Morgan. Combines a
 real-time space **skirmish** (Asteroids-style dogfighting with customisable ships) and a
 turn-based **conquest** strategy layer, where contested planets are resolved with live
