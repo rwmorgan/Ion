@@ -251,9 +251,32 @@ STATES.conquest = (() => {
 
     handleInput(C, m);
     drawMap(ctx, C, m);
+    drawLegend(ctx);
     drawPanel(ctx, C, m);
 
     if (C.over) drawGameOver(ctx, C, m);
+  }
+
+  // Small reference in the map's bottom-left corner.
+  function drawLegend(ctx) {
+    const w = 250, h = 80, x = 16, y = ION.H - h - 16;
+    roundRect(ctx, x, y, w, h, 8); ctx.fillStyle = 'rgba(12,18,30,0.88)'; ctx.fill();
+    ctx.strokeStyle = '#2a3550'; ctx.lineWidth = 1; ctx.stroke();
+    drawText(ctx, 'LEGEND', x + 12, y + 17, { size: 11, color: COL.dim, weight: '700' });
+
+    // Ships sample: a coloured planet with a number.
+    const sx = x + 26, cy1 = y + 40;
+    const g = ctx.createRadialGradient(sx - 3, cy1 - 3, 1, sx, cy1, 11);
+    g.addColorStop(0, FACTION[0].main); g.addColorStop(1, shade(FACTION[0].main));
+    ctx.fillStyle = g; ctx.beginPath(); ctx.arc(sx, cy1, 11, 0, TAU); ctx.fill();
+    ctx.strokeStyle = FACTION[0].main; ctx.lineWidth = 1; ctx.stroke();
+    drawText(ctx, '3', sx, cy1 + 1, { size: 13, align: 'center', baseline: 'middle', weight: '800', color: '#05060d' });
+    drawText(ctx, 'number = ships stationed', x + 48, cy1, { size: 12, baseline: 'middle', color: COL.text });
+
+    // Value sample: amber dots.
+    const cy2 = y + 64;
+    for (let v = 0; v < 3; v++) { ctx.fillStyle = COL.warn; ctx.beginPath(); ctx.arc(sx - 10 + v * 10, cy2, 2.5, 0, TAU); ctx.fill(); }
+    drawText(ctx, 'dots = value (resources / turn)', x + 48, cy2, { size: 12, baseline: 'middle', color: COL.text });
   }
 
   let stars = null;
