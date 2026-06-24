@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ION — Space Skirmish &amp; Strategy</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div id="game-wrap">
+    <canvas id="game" width="1280" height="720"></canvas>
+  </div>
+
+  <!-- Load order matters: core utilities first, then data, then entities, then states. -->
+  <script src="js/util.js"></script>
+  <script src="js/audio.js"></script>
+  <script src="js/input.js"></script>
+  <script src="js/data.js"></script>
+  <script src="js/sprites.js"></script>
+  <script src="js/storage.js"></script>
+  <script src="js/entities.js"></script>
+  <script src="js/ai.js"></script>
+  <script src="js/states/menu.js"></script>
+  <script src="js/states/help.js"></script>
+  <script src="js/states/editor.js"></script>
+  <script src="js/states/skirmish.js"></script>
+  <script src="js/states/conquest.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>

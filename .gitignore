@@ -1,0 +1,8 @@
+# Editor / OS cruft
+.DS_Store
+Thumbs.db
+*.tmp
+
+# Local tooling, not needed for the hosted site
+.claude/
+_gdd_extracted.md
