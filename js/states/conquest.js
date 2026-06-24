@@ -68,15 +68,16 @@ STATES.conquest = (() => {
   }
 
   // ---- Setup (called by Game.launchConquest) ----
-  function init(humanDesign, aiCount, mapSize) {
+  function init(humanDesign, aiCount, mapSize, diffLevel = 1) {
     const numPlayers = 1 + aiCount;
     const planets = generateMap(mapSize, numPlayers);
+    const D = Data.DIFFICULTY[diffLevel] || Data.DIFFICULTY[1];
     const players = [];
     for (let i = 0; i < numPlayers; i++) {
       players.push({
         faction: i, human: i === 0, resources: 5, eliminated: false,
         design: i === 0 ? humanDesign : Data.preset(pick(Data.PRESET_NAMES)),
-        difficulty: 0.22 + i * 0.05,
+        difficulty: D.conquestBase + i * D.conquestStep,
       });
     }
     return {

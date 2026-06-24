@@ -114,5 +114,14 @@ const Data = (() => {
   }
   const PRESET_NAMES = ['interceptor','gunship','bomber','battleship'];
 
-  return { HULLS, COMPONENTS, PALETTE, computeStats, buildCost, preset, PRESET_NAMES };
+  // ---- Difficulty levels ----
+  // skirmish: combat-AI skill for skirmish matches.
+  // conquestBase/Step: per-player combat skill in conquest = base + playerIndex*step.
+  const DIFFICULTY = [
+    { name: 'Easy',   skirmish: 0.30, conquestBase: 0.22, conquestStep: 0.04 },
+    { name: 'Normal', skirmish: 0.55, conquestBase: 0.42, conquestStep: 0.05 },
+    { name: 'Hard',   skirmish: 0.82, conquestBase: 0.62, conquestStep: 0.06 },
+  ];
+
+  return { HULLS, COMPONENTS, PALETTE, computeStats, buildCost, preset, PRESET_NAMES, DIFFICULTY };
 })();

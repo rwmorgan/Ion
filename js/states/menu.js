@@ -69,9 +69,9 @@ STATES.menu = (() => {
     drawText(ctx, kind === 'skirmish' ? 'SKIRMISH SETUP' : 'CONQUEST SETUP', cx, 260, { size: 30, align: 'center', weight: '700' });
 
     // Opponents selector
-    drawText(ctx, 'AI Opponents', cx - 200, 330, { size: 18, color: COL.text, align: 'left' });
+    drawText(ctx, 'AI Opponents', cx - 200, 326, { size: 18, color: COL.text });
     for (let i = 1; i <= 3; i++) {
-      const r = { x: cx + 20 + (i - 1) * 60, y: 312, w: 50, h: 32 };
+      const r = { x: cx + 20 + (i - 1) * 60, y: 308, w: 50, h: 32 };
       const sel = S.aiCount === i;
       if (button(ctx, m, r, '' + i, { size: 18, fill: sel ? COL.accent : COL.panel, accent: sel ? '#05060d' : COL.accent })) {
         S.aiCount = i; Audio2.play('click');
@@ -80,20 +80,30 @@ STATES.menu = (() => {
     }
 
     // Your ship design selector
-    drawText(ctx, 'Your Flagship', cx - 200, 392, { size: 18, color: COL.text });
+    drawText(ctx, 'Your Flagship', cx - 200, 386, { size: 18, color: COL.text });
     const designs = Game.allSelectableDesigns();
     const dname = designs[S.designIndex % designs.length].name;
-    if (button(ctx, m, { x: cx + 20, y: 374, w: 40, h: 32 }, '<', { size: 18 })) { S.designIndex = (S.designIndex + designs.length - 1) % designs.length; Audio2.play('click'); }
-    drawText(ctx, dname, cx + 145, 392, { size: 18, align: 'center', color: COL.accent, weight: '600' });
-    if (button(ctx, m, { x: cx + 230, y: 374, w: 40, h: 32 }, '>', { size: 18 })) { S.designIndex = (S.designIndex + 1) % designs.length; Audio2.play('click'); }
+    if (button(ctx, m, { x: cx + 20, y: 368, w: 40, h: 32 }, '<', { size: 18 })) { S.designIndex = (S.designIndex + designs.length - 1) % designs.length; Audio2.play('click'); }
+    drawText(ctx, dname, cx + 145, 386, { size: 18, align: 'center', color: COL.accent, weight: '600' });
+    if (button(ctx, m, { x: cx + 230, y: 368, w: 40, h: 32 }, '>', { size: 18 })) { S.designIndex = (S.designIndex + 1) % designs.length; Audio2.play('click'); }
+
+    // Difficulty selector
+    drawText(ctx, 'Difficulty', cx - 200, 446, { size: 18, color: COL.text });
+    for (let i = 0; i < Data.DIFFICULTY.length; i++) {
+      const r = { x: cx + 20 + i * 90, y: 428, w: 80, h: 32 };
+      const sel = S.difficulty === i;
+      const col = i === 0 ? COL.good : i === 2 ? COL.accent2 : COL.warn;
+      if (button(ctx, m, r, Data.DIFFICULTY[i].name, { size: 15, fill: sel ? col : COL.panel, accent: sel ? '#05060d' : col, border: sel ? col : '#2a3550' })) { S.difficulty = i; Audio2.play('click'); }
+      if (sel) drawText(ctx, Data.DIFFICULTY[i].name, r.x + r.w / 2, r.y + r.h / 2, { size: 15, align: 'center', baseline: 'middle', color: '#05060d', weight: '700' });
+    }
 
     if (kind === 'skirmish') {
-      drawText(ctx, 'Each fleet has 3 ships — last fleet flying wins.', cx, 450, { size: 15, align: 'center', color: COL.dim });
+      drawText(ctx, 'Each fleet has 3 ships — last fleet flying wins.', cx, 512, { size: 15, align: 'center', color: COL.dim });
     } else {
-      drawText(ctx, 'Map size', cx - 200, 452, { size: 18, color: COL.text });
+      drawText(ctx, 'Map size', cx - 200, 506, { size: 18, color: COL.text });
       const sizes = ['Small', 'Medium', 'Large'];
       for (let i = 0; i < 3; i++) {
-        const r = { x: cx + 20 + i * 90, y: 434, w: 80, h: 32 };
+        const r = { x: cx + 20 + i * 90, y: 488, w: 80, h: 32 };
         const sel = S.mapSize === i;
         if (button(ctx, m, r, sizes[i], { size: 15, fill: sel ? COL.accent : COL.panel, accent: sel ? '#05060d' : COL.accent })) { S.mapSize = i; Audio2.play('click'); }
         if (sel) drawText(ctx, sizes[i], r.x + r.w / 2, r.y + r.h / 2, { size: 15, align: 'center', baseline: 'middle', color: '#05060d', weight: '700' });
@@ -101,12 +111,12 @@ STATES.menu = (() => {
     }
 
     // Start / Back
-    if (button(ctx, m, { x: cx - 170, y: 540, w: 150, h: 50 }, 'BACK', { size: 20 })) { mode = 'main'; Audio2.play('click'); }
-    if (button(ctx, m, { x: cx + 20, y: 540, w: 150, h: 50 }, 'LAUNCH', { size: 20, fill: COL.accent, accent: '#05060d', border: COL.accent })) {
+    if (button(ctx, m, { x: cx - 170, y: 560, w: 150, h: 50 }, 'BACK', { size: 20 })) { mode = 'main'; Audio2.play('click'); }
+    if (button(ctx, m, { x: cx + 20, y: 560, w: 150, h: 50 }, 'LAUNCH', { size: 20, fill: COL.accent, accent: '#05060d', border: COL.accent })) {
       Audio2.play('deploy');
       const design = designs[S.designIndex % designs.length];
-      if (kind === 'skirmish') Game.launchSkirmishMatch(design, S.aiCount);
-      else Game.launchConquest(design, S.aiCount, S.mapSize);
+      if (kind === 'skirmish') Game.launchSkirmishMatch(design, S.aiCount, S.difficulty);
+      else Game.launchConquest(design, S.aiCount, S.mapSize, S.difficulty);
     }
   }
 

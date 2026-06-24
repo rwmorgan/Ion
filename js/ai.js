@@ -110,10 +110,13 @@ const AI = (() => {
     }
     myPlanets.sort((a, b) => threatOf(b) - threatOf(a));
 
+    const diff = me.difficulty ?? 0.4;
+    const buildCap = Math.round(2 + diff * 5); // Easy ~3, Normal ~4, Hard ~6 ships/turn
+
     const design = pick(C.aiDesigns || [Data.preset('gunship')]);
     const cost = Data.buildCost(design.hull, design.comps);
     let guard = 0;
-    while (budget >= cost && guard < 3) {
+    while (budget >= cost && guard < buildCap) {
       const target = myPlanets[0];
       orders.push({ type: 'build', planet: C.planets.indexOf(target), design });
       target._plannedShips = (target._plannedShips || target.ships) + 1;
@@ -136,9 +139,11 @@ const AI = (() => {
       if (bestTarget >= 0) {
         const send = Math.max(1, garrison - 1);
         const defNeeded = C.planets[bestTarget].ships;
-        // Cautious: only commit when it has a clear advantage, and only
-        // sometimes — so the AI expands slowly and rarely overruns the player.
-        if (send > defNeeded * 1.4 && Math.random() < 0.45) {
+        // Aggression scales with difficulty: Easy needs a big edge and rarely
+        // commits; Hard pushes with only a slim advantage and attacks often.
+        const advantageNeeded = 1.6 - diff * 0.9;   // Easy ~1.4, Hard ~1.0
+        const attackChance = 0.3 + diff * 0.55;     // Easy ~0.42, Hard ~0.73
+        if (send > defNeeded * advantageNeeded && Math.random() < attackChance) {
           orders.push({ type: 'move', from: pi, to: bestTarget, count: send });
         }
       }

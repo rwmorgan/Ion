@@ -6,7 +6,7 @@ const Game = (() => {
 
   // Shared persistent data.
   const designs = [];        // player-saved ship designs
-  const settings = { aiCount: 1, designIndex: 0, mapSize: 1 };
+  const settings = { aiCount: 1, designIndex: 0, mapSize: 1, difficulty: 1 }; // difficulty: 0=Easy 1=Normal 2=Hard
   let skirmishConfig = null; // active skirmish setup
   let C = null;              // active conquest state (held here so it survives battles)
   let pendingBattleResolve = null;
@@ -42,20 +42,21 @@ const Game = (() => {
   }
 
   // ---- Launch helpers used by menu / conquest ----
-  function launchSkirmishMatch(humanDesign, aiCount) {
+  function launchSkirmishMatch(humanDesign, aiCount, diffLevel = 1) {
     const fleets = [{ faction: 0, design: humanDesign, count: 3, human: true }];
     for (let i = 1; i <= aiCount; i++)
       fleets.push({ faction: i, design: Data.preset(pick(Data.PRESET_NAMES)), count: 3, human: false });
+    const skill = (Data.DIFFICULTY[diffLevel] || Data.DIFFICULTY[1]).skirmish;
     skirmishConfig = {
-      title: 'SKIRMISH', difficulty: 0.3, fleets,
+      title: 'SKIRMISH', difficulty: skill, fleets,
       hazards: { asteroids: 6, planet: true, nebula: true },
       onEnd: () => setState('menu'),
     };
     setState('skirmish');
   }
 
-  function launchConquest(humanDesign, aiCount, mapSize) {
-    C = STATES.conquest.init(humanDesign, aiCount, mapSize);
+  function launchConquest(humanDesign, aiCount, mapSize, diffLevel = 1) {
+    C = STATES.conquest.init(humanDesign, aiCount, mapSize, diffLevel);
     setState('conquest');
   }
 
